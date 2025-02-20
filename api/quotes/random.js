@@ -2,6 +2,17 @@
 import { db } from '../../lib/firebase';
 
 export default async function handler(req, res) {
+	// Set CORS headers
+	res.setHeader('Access-Control-Allow-Origin', '*'); // Allow requests from any origin
+	res.setHeader('Access-Control-Allow-Methods', 'GET'); // Allow only GET requests
+	res.setHeader('Access-Control-Allow-Headers', 'Content-Type');
+
+	// Handle preflight request for CORS
+	if (req.method === 'OPTIONS') {
+		return res.status(200).end();
+	}
+
+	// Fetch quotes from Firestore
 	const snapshot = await db.collection('quotes').get();
 	const quotes = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
 
